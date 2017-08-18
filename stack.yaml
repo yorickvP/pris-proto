@@ -1,0 +1,16 @@
+flags: {}
+nix:
+  packages:
+  - libcxx
+  - icu
+  - gcc
+  - ncurses
+  - zlib.dev
+  - zlib.out
+  enable: true
+extra-package-dbs: []
+packages:
+- .
+extra-deps:
+- network-bytestring-0.1.1.2
+resolver: lts-9.1
