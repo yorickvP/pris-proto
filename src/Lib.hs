@@ -25,8 +25,7 @@ replyPacket PollConfig = return $ Just $ ConfigBericht [RuimteConfig 1337 [Categ
 
 
 runner :: (Packet -> IO (Maybe Packet)) -> Conduit (PositionRange,Packet) IO Packet
-runner mapfunction = do
-  Just (range, pkt) <- await
+runner mapfunction = awaitForever $ \(_, pkt) -> do
   reply <- liftIO $ mapfunction pkt
   case reply of
     Just r -> yield r
