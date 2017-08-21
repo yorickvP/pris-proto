@@ -18,6 +18,7 @@ import           Data.Set (Set)
 import           Data.Map.Strict (Map)
 import           Control.Monad (foldM)
 import qualified Data.Set as Set
+import Data.List
 
 parsePacket :: BS.ByteString -> Result Packet
 parsePacket x = P.feed (P.parse packetParser x) (BS.pack [])
@@ -34,7 +35,7 @@ instance PrisParse Word16 where
 instance PrisParse y => PrisParse (Map Word16 y) where
   parse = do
     num <- anyWord16be
-    foldM readEntry Map.empty [Prelude.take (fromIntegral num) $ repeat 0]
+    foldM readEntry Map.empty [genericReplicate num ()]
     where
       readEntry map _ = do
         key <- anyWord16be
@@ -44,7 +45,7 @@ instance PrisParse y => PrisParse (Map Word16 y) where
 instance PrisParse y => PrisParse ([y]) where
   parse = do
     num <- anyWord16be
-    mapM (const $ parse) (Prelude.take (fromIntegral num) $ repeat 0)
+    mapM (const $ parse) (genericReplicate num 0)
 instance (Enum t, Bounded t, Ord t) => PrisParse (Set t) where
   parse = do
     x <- anyWord16be
